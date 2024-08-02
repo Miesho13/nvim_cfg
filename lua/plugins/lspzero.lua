@@ -22,30 +22,31 @@ return {
 
         config = function()
             local lsp = require("lsp-zero")
-            require('lspconfig').clangd.setup({})
+            lsp.extend_lspconfig()
+
             lsp.preset('recommended')
             lsp.setup()
-            
+
             lsp.on_attach(function(client, bufnr)
               lsp.default_keymaps({buffer = bufnr})
             end)
 
             require('mason').setup({})
             require('mason-lspconfig').setup({
-              -- Replace the language servers listed here
-              -- with the ones you want to install
-              ensure_installed = {'clangd'},
-              handlers = {
+                -- Replace the language servers listed here
+                -- with the ones you want to install
+                ensure_installed = {'clangd'},
+                handlers = {
                 function(server_name)
-                  require('lspconfig')[server_name].setup({})
+                    require('lspconfig')[server_name].setup({})
                 end,
-              }
+                }
+                 
             })
 
 
 
-
-            -- copilition
+             require'lspconfig'.clangd.setup{} 
         end,
     },
 }
