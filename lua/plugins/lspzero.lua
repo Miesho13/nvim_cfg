@@ -44,9 +44,14 @@ return {
                  
             })
 
+            vim.diagnostic.config( {
+                virtual_text = false,  -- Disable inline diagnostic text
+                signs = true,          -- Enable signs in the gutter for errors/warnings
+                underline = true,      -- Enable underlining for errors/warnings
+                update_in_insert = false, -- Disable diagnostics while in insert mode
+            })
 
-
-             require'lspconfig'.clangd.setup{} 
+            require'lspconfig'.clangd.setup{} 
         end,
     },
 }
