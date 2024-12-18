@@ -18,6 +18,7 @@ return {
             -- Snippets
             {"L3MON4D3/LuaSnip"},
             {"rafamadriz/friendly-snippets"},
+
         },
 
         config = function()
@@ -52,6 +53,70 @@ return {
             })
 
             require'lspconfig'.clangd.setup{} 
+
+
+            -- nvim-cmp setup
+            local cmp = require('cmp')
+            local luasnip = require('luasnip')
+            local lspkind = require('lspkind')
+
+            cmp.setup({
+                snippet = {
+                    expand = function(args)
+                        luasnip.lsp_expand(args.body)
+                    end,
+                },
+                window = {
+                    completion = cmp.config.window.bordered(),
+                    documentation = cmp.config.window.bordered(),
+                },
+                formatting = {
+                    -- Format completion menu with icons and colors
+                    format = lspkind.cmp_format({
+                        mode = 'symbol_text',  -- Show symbol and text
+                        maxwidth = 50,         -- Max width of the popup
+                        ellipsis_char = '...', -- Truncate long entries
+                        menu = {
+                            buffer = "[Buffer]",
+                            nvim_lsp = "[LSP]",
+                            luasnip = "[Snippet]",
+                            path = "[Path]",
+                        },
+                    }),
+                },
+                mapping = cmp.mapping.preset.insert({
+                    ['<C-Space>'] = cmp.mapping.complete(),
+                    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+                    ['<Tab>'] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_next_item()
+                        elseif luasnip.expand_or_jumpable() then
+                            luasnip.expand_or_jump()
+                        else
+                            fallback()
+                        end
+                    end, { 'i', 's' }),
+                    ['<S-Tab>'] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_prev_item()
+                        elseif luasnip.jumpable(-1) then
+                            luasnip.jump(-1)
+                        else
+                            fallback()
+                        end
+                    end, { 'i', 's' }),
+                }),
+                sources = {
+                    { name = 'nvim_lsp' },
+                    { name = 'luasnip' },
+                    { name = 'buffer' },
+                    { name = 'path' },
+                },
+                experimental = {
+                    ghost_text = true,  -- Show inline ghost text (like VSCode)
+                },
+        })
+
         end,
     },
 }
