@@ -1,4 +1,5 @@
 require("config.lazy")
 require("config.set")
 require("config.remap")
+require("config.harpoon")
 require("lazy").setup("plugins")
