@@ -9,5 +9,6 @@ return {
         vim.keymap.set('n', "<leader>fb", tele.buffers, {})
         vim.keymap.set('n', "<leader>fh", tele.help_tags, {})
         vim.keymap.set('n', "<leader>ff", tele.grep_string, {})
+        vim.keymap.set('n', "<leader>fs", '<cmd>Telescope lsp_document_symbols<cr>', {desc = 'Document symbols' })
     end,
 }

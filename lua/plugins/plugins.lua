@@ -60,6 +60,15 @@ return {
     },
 
     { "blazkowolf/gruber-darker.nvim" },
+
+    { 'Civitasv/cmake-tools.nvim', opts = {} },
+
+--    {
+--        dir = "~/programming/lua/Oscillo",
+--        name = "Oscillo",
+--    },
+
+    { "Miesho13/Oscillo" }
 }
 
 

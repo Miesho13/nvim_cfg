@@ -25,7 +25,7 @@ return {
             local lsp = require("lsp-zero")
             lsp.extend_lspconfig()
 
-            lsp.preset('recommended')
+            -- lsp.preset('recommended')
             lsp.setup()
 
             lsp.on_attach(function(client, bufnr)
@@ -52,7 +52,7 @@ return {
                 update_in_insert = false, -- Disable diagnostics while in insert mode
             })
 
-            require'lspconfig'.clangd.setup{} 
+            -- require'lspconfig'.clangd.setup{} 
 
 
             -- nvim-cmp setup
@@ -116,7 +116,7 @@ return {
                     ghost_text = true,  -- Show inline ghost text (like VSCode)
                 },
         })
-
+            vim.api.nvim_set_keymap('n', '<leader>gd', '<cmd>lua vim.lsp.buf.references()<CR>', { noremap = true, silent = true })
         end,
     },
 }
