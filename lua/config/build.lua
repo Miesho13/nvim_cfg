@@ -2,6 +2,7 @@ local M = {}
 
 local build_def_cmd = "./build.sh"
 local ns_id = vim.api.nvim_create_namespace("build_output")
+local last_build_buf = nil
 
 -- Define highlight groups
 vim.api.nvim_set_hl(0, "MyErrorText",   { fg = "#ff5555", bg = "NONE", bold = true })
@@ -44,8 +45,13 @@ function M.build(params)
     local origin_win = vim.api.nvim_get_current_win()
     local origin_buf = vim.api.nvim_get_current_buf()
 
+    -- Close previous build buffer if it exists
+    if last_build_buf and vim.api.nvim_buf_is_valid(last_build_buf) then
+        vim.api.nvim_buf_delete(last_build_buf, { force = true })
+    end
+
     vim.cmd("botright split")
-    vim.cmd("resize 20")
+    vim.cmd("resize 13")
 
     local build_cmd = build_def_cmd
     if params ~= "" then
@@ -54,6 +60,8 @@ function M.build(params)
     
     local buf = vim.api.nvim_create_buf(false, true)
     vim.api.nvim_win_set_buf(0, buf)
+
+    last_build_buf = buf
 
     -- Set options
     vim.api.nvim_win_set_option(0, "wrap", true)
@@ -118,7 +126,17 @@ function M.build(params)
                 local filepath, linenum = string.match(line, "([^:%s]+%.%a+):(%d+):%d+")
 
                 if filepath and linenum then
-                    vim.api.nvim_set_current_win(origin_win)
+                    local target_win = nil
+                    for _, win in ipairs(vim.api.nvim_list_wins()) do
+                        if vim.api.nvim_win_get_buf(win) ~= buf then
+                            target_win = win
+                            break
+                        end
+                    end
+
+                    if target_win then
+                        vim.api.nvim_set_current_win(target_win)
+                    end
 
                     vim.cmd("edit " .. filepath)
                     vim.cmd(linenum)
@@ -134,7 +152,11 @@ vim.api.nvim_create_user_command("Build", function(opts)
 end, { nargs = "*" })
 
 vim.keymap.set("n", "<leader>c", function()
-    M.build("")
-end, { desc = "Oscillo build" })
+    M.build("./build.sh")
+end, { desc = "build deafult" })
+
+vim.keymap.set("n", "<leader>C", function()
+    M.build("./rebuild.sh")
+end, { desc = "build rebuild" })
 
 return M
